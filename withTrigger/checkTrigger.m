@@ -1,3 +1,6 @@
+% This funciton checks the current trial and send trigger informing current
+% frequency, perspective of the images in the current trial.
+
 function [cTrig] = checkTrigger(expInfo,Trig,t)
 if strcmpi(expInfo(t).imType,'self')
     if (expInfo(t).block == 1 || expInfo(t).block == 2)
