@@ -69,33 +69,68 @@ expInfo = [iBlock, eBlock]; % merge blocks
 nTrial = length(expInfo); % number of trials
 
 %% image number asign
-cIm.ls = 0;cIm.lf = 0;cIm.rs=0;cIm.rf=0;cIm.cs=0;cIm.cf=0;
+cIm.ls4 = 1;cIm.lf4 = 1;cIm.rs4=1;cIm.rf4=1;cIm.cs4=1;cIm.cf4=1;
+cIm.ls10 = 14;cIm.lf10 = 14;cIm.rs10=14;cIm.rf10=14;cIm.cs10=14;cIm.cf10=14;
 for n = 1: nTrial
-    switch expInfo(n).perspective
-        case 'left'
-            if strcmpi(expInfo(n).imType,'self')
-                cIm.ls = cIm.ls + 1;
-                expInfo(n).nim = cIm.ls;
-            else
-                cIm.lf = cIm.lf +1;
-                expInfo(n).nim = cIm.lf;
-            end
-        case 'right'
-            if strcmpi(expInfo(n).imType,'self')
-                cIm.rs = cIm.rs + 1;
-                expInfo(n).nim = cIm.rs;
-            else
-                cIm.rf = cIm.rf +1;
-                expInfo(n).nim = cIm.rf;
-            end
-        case 'center'
-            if strcmpi(expInfo(n).imType,'self')
-                cIm.cs = cIm.cs + 1;
-                expInfo(n).nim = cIm.cs;
-            else
-                cIm.cf = cIm.cf +1;
-                expInfo(n).nim = cIm.cf;
-            end
+    if expInfo(n).freq == 4
+        switch expInfo(n).perspective
+            case 'left'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.ls4;
+                    cIm.ls4 = cIm.ls4 + 1;
+                else
+                    expInfo(n).nim = cIm.lf4;
+                    cIm.lf4 = cIm.lf4 +1;
+                end
+            case 'right'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.rs4;
+                    cIm.rs4 = cIm.rs4 +1;
+                    
+                else
+                    expInfo(n).nim = cIm.rf4;
+                    cIm.rf4 = cIm.rf4 +1;
+                    
+                end
+            case 'center'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.cs4;
+                    cIm.cs4 = cIm.cs4 + 1;
+                    
+                else
+                    expInfo(n).nim = cIm.cf4;
+                    cIm.cf4 = cIm.cf4 +1;
+                end
+        end
+    else
+        switch expInfo(n).perspective
+            case 'left'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.ls10;
+                    cIm.ls10 = cIm.ls10 + 1;
+                else
+                    expInfo(n).nim = cIm.lf10;
+                    cIm.lf10 = cIm.lf10 +1;
+                end
+            case 'right'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.rs10;
+                    cIm.rs10 = cIm.rs10 +1;
+                    
+                else
+                    expInfo(n).nim = cIm.rf10;
+                    cIm.rf10 = cIm.rf10 +1;
+                end
+            case 'center'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.cs10;
+                    cIm.cs10 = cIm.cs10 + 1;
+                    
+                else
+                    expInfo(n).nim = cIm.cf10;
+                    cIm.cf10 = cIm.cf10 +1;  
+                end
+        end
     end
 end
 
