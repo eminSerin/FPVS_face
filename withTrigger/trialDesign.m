@@ -1,23 +1,25 @@
-function [expInfo] = trialDesign(cond)
+function [expInfo] = trialDesign(cond,freq)
 % trial design
 imageType = {'familiar','self'}; % Image types used in the experiment
 perspective = {'left','right','center'};
-frequency = {4,10};
 
 expInfo.trial = [];
 expInfo.block = [];
 count = 0;
 
+if length(freq) == 1
+    freq = [freq freq];
+end
 %% Genesis block.
 for n = 1: 3
     for i = 1: length(imageType)
         for p = 1: length(perspective)
-            for f = 1: length(frequency)
+            for f = 1: length(freq)
                 count = count + 1;
                 expInfo(count).imType = imageType{i};
                 expInfo(count).perspective = perspective{p};
                 expInfo(count).nim = [];
-                expInfo(count).freq = frequency{f};
+                expInfo(count).freq = freq{f};
                 expInfo(count).responseType = [];
                 expInfo(count).response = [];
                 expInfo(count).accuracy = [];

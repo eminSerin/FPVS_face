@@ -1,5 +1,5 @@
 function [trainInfo] = trainTask(mainwin,expInfo,frame,cBlock,...
-    inputDir,noiseDir,lenNoise,keyList,t,pos,color,msg,trnum,trainInfo,cTrial)
+    inputDir,noiseDir,lenNoise,keyList,t,pos,color,msg,trnum,trainInfo,cTrial,freq)
 
 %% Preload Images
 DrawFormattedText(mainwin,'+','center','center',color.text);
@@ -8,7 +8,6 @@ Screen('Flip',mainwin);
 % features
 imageType = {'familiar','self'};
 perspective = {'left','right','center'};
-frequency = {4,10};
 pink = {'pink',[]};
 
 % Random perspective. 
@@ -34,10 +33,18 @@ else
 end
 
 % random Frequency
-randInf.f = frequency{randi(length(frequency))}; % frequency
-if randInf.f == 4
-    freqStr = '04';
-    randInf.nim = randi(max([expInfo.nim])/2);
+randInf.f = freq(randi(length(freq))); % frequency
+if length(freq) > 1
+    if randInf.f == 4
+        freqStr = '04';
+        randInf.nim = randi(max([expInfo.nim])/2);
+    else
+        freqStr = num2str(randInf.f);
+        randInf.nim = 13 + randi(max([expInfo.nim])/2);
+    end
+elseif freq == 4
+     freqStr = '04';
+     randInf.nim = randi(max([expInfo.nim])/2);
 else
     freqStr = num2str(randInf.f);
     randInf.nim = 13 + randi(max([expInfo.nim])/2);

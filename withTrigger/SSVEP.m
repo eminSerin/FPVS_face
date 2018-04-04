@@ -4,6 +4,8 @@ try
     
     subID = input('Participant number: ','s'); % ask participant id.
     cond = 'l'; % left self > right self.
+    freq = [4]; % presentation frequency (4 or 10 or both could be used.)
+    freq = sort(freq);
     %% Experimental Parameters
     
     % Where stimuli folders locate
@@ -71,7 +73,7 @@ try
     OpenTriggerPort;
     StartSaveBDF;
     %% Trial Design
-    expInfo = trialDesign(cond);
+    expInfo = trialDesign(cond,freq);
     
     % reset random seed
     rand('state',sum(100*clock));
@@ -112,30 +114,30 @@ try
     
     %% Welcome, Goodbye and Instructions
     msg.welcome = ['Willkommen zu unserer Studie! \n Dieses Experiment ',...
-        'besteht aus zwei verschiedenen Aufgaben mit jeweils zwei Bl�cken.' ...
-        '\n Dr�cken Sie nun eine beliebige Taste, um fortzufahren.'];
-    msg.lSelf= ['Bitte dr�cken Sie so schnell wie m�glich die linke STRG-TASTE, sobald Sie Ihr eigenes ',...
+        'besteht aus zwei verschiedenen Aufgaben mit jeweils zwei Blöcken.' ...
+        '\n Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
+    msg.lSelf= ['Bitte drücken Sie so schnell wie möglich die linke STRG-TASTE, sobald Sie Ihr eigenes ',...
         'Gesicht auf dem Bildschirm sehen, oder die rechte PFEIL-TASTE, sobald Sie das Gesicht ',...
         'Ihrer Freundin/Ihres Frendes sehen.\n',...
-        'Dr�cken Sie nun eine beliebige Taste, um fortzufahren.'];
-    msg.rSelf = ['Bitte dr�cken Sie so schnell wie m�glich die rechte PFEIL-TASTE, sobald Sie Ihr eigenes ',...
+        'Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
+    msg.rSelf = ['Bitte drücken Sie so schnell wie möglich die rechte PFEIL-TASTE, sobald Sie Ihr eigenes ',...
         'Gesicht auf dem Bildschirm sehen, oder die linke STRG-TASTE, sobald Sie das Gesicht  ',...
         'Ihrer Freundin/Ihres Frendes sehen.\n',...
-        'Dr�cken Sie nun eine beliebige Taste, um fortzufahren.'];
+        'Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
     msg.block2 = ['Die Aufgabe ist dieselbe, wie im vorherigen Block. \n',...
-        'Dr�cken Sie eine beliebige Taste, um zu starten.'];
+        'Drücken Sie eine beliebige Taste, um zu starten.'];
     msg.block = ['Block '];
     msg.keyChange = ['Die jeweiligen Tasten wurden getauscht. \n '];
     msg.task1 = ['Aufgabe 1 \n',...
         'Ihre Aufgabe wird es sein, das Erscheinen eines pinken Punktes auf dem Bildschirm zu erkennen.\n',...
-        'Bitte dr�cken Sie so schnell wie m�glich mit Ihrer rechten Hand die EINGABETASTE,',...
+        'Bitte drücken Sie so schnell wie möglich mit Ihrer rechten Hand die EINGABETASTE,',...
         'sobald Sie den pinken Punkt auf dem Bildschirm sehen. Es wird jedoch auch Durchgaenge geben,',...
-        'in denen kein Punkt erscheint.\n Dr�cken Sie nun eine beliebige Taste, um fortzufahren.'];
+        'in denen kein Punkt erscheint.\n Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
     msg.task2 = ['Aufgabe 2. \n Dieses Mal sollen Sie auf das Erscheinen ',...
         'Ihres eigenen Gesichts bzw. das Gesicht einer Ihnen bekannten Person reagieren.\n'];
-    msg.training = ['Trainingsphase.\n Dr�cken Sie eine beliebige Taste, um zu starten.'];
-    msg.main = ['Die Trainingsphase ist beendet.\n Dr�cken Sie nun eine beliebige Taste, um die Testung zu starten.'];
-    msg.goodbye = ['Das Experiment ist beendet.\n Vielen Dank f�r Ihre Teilnahme!\n',...
+    msg.training = ['Trainingsphase.\n Drücken Sie eine beliebige Taste, um zu starten.'];
+    msg.main = ['Die Trainingsphase ist beendet.\n Dröcken Sie nun eine beliebige Taste, um die Testung zu starten.'];
+    msg.goodbye = ['Das Experiment ist beendet.\n Vielen Dank für Ihre Teilnahme!\n',...
         'Bitte wenden Sie sich an die Versuchsleitung.'];
     msg.correct = ['Richtig!'];
     msg.wrong = ['Falsch!'];
@@ -189,7 +191,7 @@ try
             for t = 1:3 % Number of train trials.
                 trainInfo = trainTask(mainwin,expInfo,frame,cBlock,...
                     inputDir,noiseDir,lenNoise,keys.keyList,t,pos,color,...
-                    msg,trnum,trainInfo,trial) ;
+                    msg,trnum,trainInfo,trial,freq) ;
                 trnum = trnum + 1;
             end
             
@@ -205,11 +207,11 @@ try
             KbStrokeWait;
         end
         %% Test Block
-        tnum = 20;
+        tnum = 5;
         cTrial = trial;
         disp('Test...');
-        %         while expInfo(cTrial).block == cBlock
-        for i = 1:tnum
+        while expInfo(cTrial).block == cBlock
+%         for i = 1:tnum
             disp(['Trial: ',int2str(cTrial)]);
             % Task function
             [expInfo] = testTask(mainwin,expInfo,frame,...
