@@ -1,5 +1,5 @@
 function [trainInfo] = trainTask(mainwin,expInfo,frame,cBlock,...
-    inputDir,noiseDir,lenNoise,keyList,t,pos,color,msg,trnum,trainInfo,cTrial)
+    inputDir,noiseDir,lenNoise,keyList,t,pos,color,msg,trnum,trainInfo,cTrial,freq)
 
 %% Preload Images
 DrawFormattedText(mainwin,'+','center','center',color.text);
@@ -8,12 +8,10 @@ Screen('Flip',mainwin);
 % features
 imageType = {'familiar','self'};
 perspective = {'left','right','center'};
-frequency = {4,10};
 pink = {'pink',[]};
 
-% Random features. 
+% Random perspective. 
 randInf.p = perspective{randi(length(perspective))}; % perspective
-randInf.f = frequency{randi(length(frequency))}; % frequency
 
 % Image types. 
 % At least one familiar and one self trial. 
@@ -33,14 +31,23 @@ if mod(t,2)==0
 else
     randInf.pink = pink{randi(length(pink))}; % pink
 end
-randInf.nim = randi(max([expInfo.nim])); % image number
 
-if randInf.f == 4
-    cnim = 40;
-    modn = 2;
+% random Frequency
+randInf.f = freq(randi(length(freq))); % frequency
+if length(freq) > 1
+    if randInf.f == 4
+        freqStr = '04';
+        randInf.nim = randi(max([expInfo.nim])/2);
+    else
+        freqStr = num2str(randInf.f);
+        randInf.nim = 13 + randi(max([expInfo.nim])/2);
+    end
+elseif freq == 4
+     freqStr = '04';
+     randInf.nim = randi(max([expInfo.nim])/2);
 else
-    cnim = 100;
-    modn = 5;
+    freqStr = num2str(randInf.f);
+    randInf.nim = 13 + randi(max([expInfo.nim])/2);
 end
 
 % Save train info.
@@ -56,12 +63,12 @@ trainInfo(trnum).response = [];
 jitITI = randi(5*randInf.f)+ (2.5*randInf.f);
 
 % Preload noise images.
-ITIsequence = zeros(1,(jitITI)* (frame/randInf.f)); % preallocate memory.
+% ITIsequence = zeros(1,(jitITI)* (frame/cInfo.freq)); % preallocate memory.
 nCount = 1; % count for noise sequence.
 for i = 1 : jitITI
     r = randi(lenNoise);
     noiseText = Screen('MakeTexture', mainwin, imread(noiseDir(r).name));
-    for f = 1 : (frame/randInf.f)
+    for f = 1 : ceil((frame/randInf.f)*0.5)
         ITIsequence(nCount) = noiseText;
         nCount = nCount + 1;
     end
@@ -69,32 +76,25 @@ end
 
 % Load face images.
 if randInf.nim >= 10
-    faceDir = dir([inputDir randInf.im filesep [randInf.im(1)...
-        '_' randInf.p(1) '_' 'trial_' int2str(randInf.nim)] filesep '*jpg']);
+    faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),... 
+        '_' freqStr '_' 'trial_' int2str(randInf.nim)] filesep '*jpeg']);
 else
-    faceDir = dir([inputDir randInf.im filesep [randInf.im(1)...
-        '_' randInf.p(1) '_' 'trial_' ['0' int2str(randInf.nim)]] filesep '*jpg']);
+    faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),... 
+        '_' freqStr '_' 'trial_' ['0' int2str(randInf.nim)]] filesep '*jpeg']);
 end
 
 % Create image presentation sequence.
-sequence = zeros(1,(cnim*(frame/randInf.f))); % preallocate memory.
-fCount = 1; % count for face images.
-fnCount = 1; % count for sequence.
-for i = 1: cnim
-    if ~(mod(i, modn)==0)
-        r = randi(lenNoise);
-        picText =  Screen('MakeTexture', mainwin, imread(noiseDir(r).name));
-        for f = 1 : (frame/randInf.f)
-            sequence(fnCount) = picText;
+% sequence = zeros(1,(cnim*(frame/cInfo.freq))); % preallocate memory.
+fnCount = 1;
+sequence = [];
+for c = 1 : length(faceDir)
+    picText(1) = Screen('MakeTexture', mainwin, imread(faceDir(c).name));
+    picText(2) = Screen('MakeTexture', mainwin, imread(noiseDir(randi(lenNoise)).name));
+    for h = 1 : 2
+        for f = 1 : floor((frame/randInf.f)*0.5)
+            sequence(fnCount) = picText(h);
             fnCount = fnCount + 1;
         end
-    else
-        picText = Screen('MakeTexture', mainwin, imread(faceDir(fCount).name));
-        for f = 1 : (frame/randInf.f)
-            sequence(fnCount) = picText;
-            fnCount = fnCount + 1;
-        end
-        fCount = fCount + 1;
     end
 end
 
@@ -126,8 +126,8 @@ else
         (randXY(2)+(pos.res.height-pos.height)/2)]; % random pink dot location. 
     for n = 1: length(sequence)
         Screen('DrawTexture',mainwin,sequence(n));
-        if GetSecs > dotTime && GetSecs < dotTime + .03
-            Screen('DrawDots',mainwin,pinkDot,8,color.pink,[],1);
+        if GetSecs > dotTime && GetSecs < dotTime + .25
+            Screen('DrawDots',mainwin,pinkDot,10,color.pink,[],1);
         end
         Screen('Flip',mainwin);
         if ~pressed

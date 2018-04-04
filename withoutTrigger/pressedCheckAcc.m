@@ -1,4 +1,4 @@
-function [expInfo] = pressedCheckAcc(firstPress,rtStart,expInfo,t)
+function [expInfo] = pressedCheckAcc(firstPress,rtStart,expInfo,t,Trig)
 
 % Check RT and Accuracy
 firstPress(firstPress==0)=NaN; % convert zeros to NaNs.
@@ -14,6 +14,7 @@ if expInfo(t).block == 1 || expInfo(t).block == 2
     %         else
     %             expInfo(t).rt = nan;
     %         end
+%     SendTrigger(Trig.pressed, Trig.duration);
     if strcmpi(expInfo(t).responseType,'pink') && strcmpi(response,'Return')
         expInfo(t).accuracy = 1;
         expInfo(t).rt = pressTime - rtStart; % return key.
@@ -46,18 +47,12 @@ end
 
 % Send Trigger.
 if expInfo(t).accuracy == 1
-    if expInfo(t).block == 1 || expInfo(t).block== 2
-        %         SendTrigger(Trig.impCorrect, Trig.duration);
-        disp('Trigger impCorrect')
-    else
-        disp(['Trigger expCorrect',upper(response(1))])
+    if expInfo(t).block == 3 || expInfo(t).block== 4
+%         SendTrigger(Trig.(['expCorrect',upper(response(1))]), Trig.duration);
     end
 else
-    if expInfo(t).block == 1 || expInfo(t).block== 2
-        %         SendTrigger(Trig.impWrong, Trig.duration);
-        disp('Trigger impWrong')
-    else
-        disp(['Trigger expWrong',upper(response(1))])
+    if expInfo(t).block == 3 || expInfo(t).block== 4
+%         SendTrigger(Trig.(['expWrong',upper(response(1))]), Trig.duration);
     end
 end
 end

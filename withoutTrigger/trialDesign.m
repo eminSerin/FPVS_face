@@ -1,23 +1,25 @@
-function [expInfo] = trialDesign(cond)
+function [expInfo] = trialDesign(cond,freq)
 % trial design
 imageType = {'familiar','self'}; % Image types used in the experiment
 perspective = {'left','right','center'};
-frequency = {4,10};
 
 expInfo.trial = [];
 expInfo.block = [];
 count = 0;
 
+if length(freq) == 1
+    freq = [freq freq];
+end
 %% Genesis block.
 for n = 1: 3
     for i = 1: length(imageType)
         for p = 1: length(perspective)
-            for f = 1: length(frequency)
+            for f = 1: length(freq)
                 count = count + 1;
                 expInfo(count).imType = imageType{i};
                 expInfo(count).perspective = perspective{p};
                 expInfo(count).nim = [];
-                expInfo(count).freq = frequency{f};
+                expInfo(count).freq = freq(f);
                 expInfo(count).responseType = [];
                 expInfo(count).response = [];
                 expInfo(count).accuracy = [];
@@ -69,37 +71,73 @@ expInfo = [iBlock, eBlock]; % merge blocks
 nTrial = length(expInfo); % number of trials
 
 %% image number asign
-cIm.ls = 0;cIm.lf = 0;cIm.rs=0;cIm.rf=0;cIm.cs=0;cIm.cf=0;
+cIm.ls4 = 1;cIm.lf4 = 1;cIm.rs4=1;cIm.rf4=1;cIm.cs4=1;cIm.cf4=1;
+cIm.ls10 = 14;cIm.lf10 = 14;cIm.rs10=14;cIm.rf10=14;cIm.cs10=14;cIm.cf10=14;
 for n = 1: nTrial
-    switch expInfo(n).perspective
-        case 'left'
-            if strcmpi(expInfo(n).imType,'self')
-                cIm.ls = cIm.ls + 1;
-                expInfo(n).nim = cIm.ls;
-            else
-                cIm.lf = cIm.lf +1;
-                expInfo(n).nim = cIm.lf;
-            end
-        case 'right'
-            if strcmpi(expInfo(n).imType,'self')
-                cIm.rs = cIm.rs + 1;
-                expInfo(n).nim = cIm.rs;
-            else
-                cIm.rf = cIm.rf +1;
-                expInfo(n).nim = cIm.rf;
-            end
-        case 'center'
-            if strcmpi(expInfo(n).imType,'self')
-                cIm.cs = cIm.cs + 1;
-                expInfo(n).nim = cIm.cs;
-            else
-                cIm.cf = cIm.cf +1;
-                expInfo(n).nim = cIm.cf;
-            end
+    if expInfo(n).freq == 4
+        switch expInfo(n).perspective
+            case 'left'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.ls4;
+                    cIm.ls4 = cIm.ls4 + 1;
+                else
+                    expInfo(n).nim = cIm.lf4;
+                    cIm.lf4 = cIm.lf4 +1;
+                end
+            case 'right'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.rs4;
+                    cIm.rs4 = cIm.rs4 +1;
+                    
+                else
+                    expInfo(n).nim = cIm.rf4;
+                    cIm.rf4 = cIm.rf4 +1;
+                    
+                end
+            case 'center'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.cs4;
+                    cIm.cs4 = cIm.cs4 + 1;
+                    
+                else
+                    expInfo(n).nim = cIm.cf4;
+                    cIm.cf4 = cIm.cf4 +1;
+                end
+        end
+    else
+        switch expInfo(n).perspective
+            case 'left'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.ls10;
+                    cIm.ls10 = cIm.ls10 + 1;
+                else
+                    expInfo(n).nim = cIm.lf10;
+                    cIm.lf10 = cIm.lf10 +1;
+                end
+            case 'right'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.rs10;
+                    cIm.rs10 = cIm.rs10 +1;
+                    
+                else
+                    expInfo(n).nim = cIm.rf10;
+                    cIm.rf10 = cIm.rf10 +1;
+                end
+            case 'center'
+                if strcmpi(expInfo(n).imType,'self')
+                    expInfo(n).nim = cIm.cs10;
+                    cIm.cs10 = cIm.cs10 + 1;
+                    
+                else
+                    expInfo(n).nim = cIm.cf10;
+                    cIm.cf10 = cIm.cf10 +1;  
+                end
+        end
     end
 end
 
 % assign trial numbers
 for n = 1:length(expInfo)
     expInfo(n).trial = n;
+end
 end
