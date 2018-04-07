@@ -27,18 +27,9 @@ for i = 1 : jitITI
 end
 
 % Load face images.
-if cInfo.freq == 4
-    freqStr = '04';
-else
-    freqStr = num2str(cInfo.freq);
-end
-if str2double(cInfo.nim) >= 10
-    faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1)...
-        '_' expInfo(t).perspective(1) '_' freqStr '_' 'trial_' cInfo.nim] filesep '*jpeg']);
-else
-    faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1)...
-        '_' expInfo(t).perspective(1) '_' freqStr '_' 'trial_' ['0' cInfo.nim]] filesep '*jpeg']);
-end
+faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1),...
+    '_' expInfo(t).perspective(1) '_' sprintf('%02d',cInfo.freq) '_',...
+    'trial_' sprintf('%02s',cInfo.nim)] filesep '*.jpeg']);
 
 % Create image presentation sequence.
 % sequence = zeros(1,(length(faceDir)*(frame/cInfo.freq)*2)); % preallocate memory.

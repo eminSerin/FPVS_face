@@ -35,19 +35,9 @@ end
 % random Frequency
 randInf.f = freq(randi(length(freq))); % frequency
 if length(freq) > 1
-    if randInf.f == 4
-        freqStr = '04';
-        randInf.nim = randi(max([expInfo.nim])/2);
-    else
-        freqStr = num2str(randInf.f);
-        randInf.nim = 13 + randi(max([expInfo.nim])/2);
-    end
-elseif freq == 4
-     freqStr = '04';
-     randInf.nim = randi(max([expInfo.nim])/2);
+    randInf.nim = randi(max([expInfo.nim])/2);
 else
-    freqStr = num2str(randInf.f);
-    randInf.nim = 13 + randi(max([expInfo.nim])/2);
+    randInf.nim = randi(max([expInfo.nim]));
 end
 
 % Save train info.
@@ -75,13 +65,8 @@ for i = 1 : jitITI
 end
 
 % Load face images.
-if randInf.nim >= 10
-    faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),... 
-        '_' freqStr '_' 'trial_' int2str(randInf.nim)] filesep '*jpeg']);
-else
-    faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),... 
-        '_' freqStr '_' 'trial_' ['0' int2str(randInf.nim)]] filesep '*jpeg']);
-end
+faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),...
+    '_' sprintf('%02d',randInf.f) '_' 'trial_' sprintf('%02d',randInf.nim)] filesep '*jpeg']);
 
 % Create image presentation sequence.
 % sequence = zeros(1,(cnim*(frame/cInfo.freq))); % preallocate memory.

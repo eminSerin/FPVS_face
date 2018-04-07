@@ -2,6 +2,10 @@ try
     clc;
     clear;
     
+    % reset random seed
+    rand('state',sum(100*clock));
+    
+    % Input
     subID = input('Participant number: ','s'); % ask participant id.
     cond = 'l'; % left self > right self.
     freq = [4]; % presentation frequency (4 or 10 or both could be used.)
@@ -74,9 +78,6 @@ try
     StartSaveBDF;
     %% Trial Design
     expInfo = trialDesign(cond,freq);
-    
-    % reset random seed
-    rand('state',sum(100*clock));
     
     %% Screen Parameters
     
@@ -210,7 +211,7 @@ try
         tnum = 5;
         cTrial = trial;
         disp('Test...');
-        while expInfo(cTrial).block == cBlock
+        while (expInfo(cTrial).block == cBlock) && ~(cTrial == 157)
 %         for i = 1:tnum
             disp(['Trial: ',int2str(cTrial)]);
             % Task function
@@ -218,9 +219,6 @@ try
                 inputDir,noiseDir,lenNoise,keys.keyList,cTrial,pos,color,Trig);
             cTrial = cTrial + 1; % update current trial number.
             save([outputDir,'Data_',subID,'_',date,'_s1.mat'],'expInfo','trainInfo');
-            if cTrial == 157
-                break;
-            end
         end
     end
     KbQueueStop;
