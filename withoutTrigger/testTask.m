@@ -1,4 +1,4 @@
-    function [expInfo] = testTask(mainwin,expInfo,frame,...
+function [expInfo] = testTask(mainwin,expInfo,frame,...
     inputDir,noiseDir,lenNoise,keyList,t,pos,color,Trig)
 
 %% Preload Images
@@ -27,18 +27,9 @@ for i = 1 : jitITI
 end
 
 % Load face images.
-if cInfo.freq == 4
-    freqStr = '04';
-else
-    freqStr = num2str(cInfo.freq);
-end
-if str2double(cInfo.nim) >= 10
-    faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1)...
-        '_' expInfo(t).perspective(1) '_' freqStr '_' 'trial_' cInfo.nim] filesep '*jpeg']);
-else
-    faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1)...
-        '_' expInfo(t).perspective(1) '_' freqStr '_' 'trial_' ['0' cInfo.nim]] filesep '*jpeg']);
-end
+faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1),...
+    '_' expInfo(t).perspective(1) '_' sprintf('%02d',cInfo.freq) '_',...
+    'trial_' sprintf('%02s',cInfo.nim)] filesep '*.jpeg']);
 
 % Create image presentation sequence.
 % sequence = zeros(1,(length(faceDir)*(frame/cInfo.freq)*2)); % preallocate memory.
@@ -94,7 +85,7 @@ else
         if GetSecs > dotTime && GetSecs < dotTime + .25
             Screen('DrawDots',mainwin,pinkDot,10,color.pink,[],1);
             if ~pinkPresent
-%                 SendTrigger(Trig.pink, Trig.duration);
+                %                 SendTrigger(Trig.pink, Trig.duration);
                 pinkPresent = 1;
             end
         end
@@ -117,9 +108,9 @@ if ~pressed
         expInfo(t).accuracy = 1;
     elseif strcmpi(expInfo(t).responseType,'pink')
         expInfo(t).accuracy = 0;
-     else
+    else
         expInfo(t).accuracy = 0;
-%         SendTrigger(Trig.expWrongNaN, Trig.duration);
+        %         SendTrigger(Trig.expWrongNaN, Trig.duration);
     end
     expInfo(t).rt = nan;
     expInfo(t).response = nan;

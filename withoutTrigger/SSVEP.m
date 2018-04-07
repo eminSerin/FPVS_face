@@ -2,6 +2,10 @@ try
     clc;
     clear;
     
+    % reset random seed
+    rand('state',sum(100*clock));
+    
+    % Input
     subID = input('Participant number: ','s'); % ask participant id.
     cond = 'l'; % left self > right self.
     freq = [4]; % presentation frequency (4 or 10 or both could be used.)
@@ -70,13 +74,10 @@ try
     Trig.expWrongR = 27;
     Trig.expWrongNaN = 29;
     
-%     OpenTriggerPort;
-%     StartSaveBDF;
+    %     OpenTriggerPort;
+    %     StartSaveBDF;
     %% Trial Design
     expInfo = trialDesign(cond,freq);
-    
-    % reset random seed
-    rand('state',sum(100*clock));
     
     %% Screen Parameters
     
@@ -84,7 +85,7 @@ try
     % display number. For instance if you use external display with laptop,
     % experiment take place on external display.
     screen = max(Screen('Screens'));
-%     screen = 1;
+    %     screen = 1;
     
     % Skip Sync Test. Decrease timing accuracy. Please Change when you figure
     % out problem!! If you have problem with screen synchronization test please
@@ -149,7 +150,7 @@ try
     WaitSecs(.3);
     
     %% Experiment
-%     SendTrigger(Trig.startRec, Trig.duration); % Send trigger for starting recording.
+    %     SendTrigger(Trig.startRec, Trig.duration); % Send trigger for starting recording.
     trainInfo = []; % training info.
     trnum = 1; % traning info num.
     for cBlock = 1: 4 % Four blocks.
@@ -187,7 +188,7 @@ try
 %             WaitSecs(.3);
 %             
 %             % Task function
-% %             SendTrigger(Trig.train, Trig.duration); % training.
+%             %             SendTrigger(Trig.train, Trig.duration); % training.
 %             for t = 1:3 % Number of train trials.
 %                 trainInfo = trainTask(mainwin,expInfo,frame,cBlock,...
 %                     inputDir,noiseDir,lenNoise,keys.keyList,t,pos,color,...
@@ -207,10 +208,10 @@ try
 %             KbStrokeWait;
 %         end
         %% Test Block
-        tnum = 1;
+        tnum = 2;
         cTrial = trial;
         disp('Test...');
-        while expInfo(cTrial).block == cBlock
+        while (expInfo(cTrial).block == cBlock) && ~(cTrial == 157)
 %         for i = 1:tnum
             disp(['Trial: ',int2str(cTrial)]);
             % Task function
@@ -218,20 +219,17 @@ try
                 inputDir,noiseDir,lenNoise,keys.keyList,cTrial,pos,color,Trig);
             cTrial = cTrial + 1; % update current trial number.
             save([outputDir,'Data_',subID,'_',date,'_s1.mat'],'expInfo','trainInfo');
-            if cTrial == 157
-                break;
-            end
         end
     end
     KbQueueStop;
     % End message.
     DrawFormattedText(mainwin,msg.goodbye,'center','center', color.text,60,[],[],2);
     Screen('Flip',mainwin);
-%     CloseTriggerPort; % Close Trigger port.
+    %     CloseTriggerPort; % Close Trigger port.
     KbWait;
 catch error
     sca;
     rethrow(error);
-%     CloseTriggerPort; % Close trigger port.
+    %     CloseTriggerPort; % Close trigger port.
 end
 sca;
