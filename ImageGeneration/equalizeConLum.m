@@ -1,14 +1,29 @@
-function [] = equalizeConLum(subID)
+function [] = equalizeConLum(subID,varargin)
 %   EQUALIZECONLUM
 %   This function equalizes contrast and luminance of image couples. Couple
 %   images are first averaged and the histogram of each image is matched
 %   with histogram of averaged image using imhistmatch function. 
-%   Please write subject ID as input arguement. 
+%   
+%   Usage: 
+%   equalizeConLum(2); % equalizes images with original luminance.
+%   
+%   equalizeConLum(2,0.9); % equalizes images and decreases luminance by
+%   10%. 
+%
 %   Output image will be saved in new directory called equalizedImages.
-%   Written by Emin Serin (emin.serin@hu-berlin.de)
-%   e.g. equalizeConLum(2);
-
+%   
+%   Author: Emin Serin (emin.serin@hu-berlin.de)
+%   
 %% Input
+if length(varargin) > 1
+    % raise an error if more than 3 parameters given.
+    error(['requires at most 1 arguements.',' e.g. equalizeConLum(10,.9)'])
+end
+optargs = {1}; % default parameters.
+optargs(1:length(varargin)) = varargin; % overwrite parameters if given. 
+
+lum = optargs{1};
+
 % Input and output directory. 
 subID = num2str(subID);
 imgPath  = [pwd,filesep,'raw_images', filesep, subID, filesep];
@@ -23,7 +38,7 @@ end
 allPics = dir([imgPath, '*jpg']); % all pictures.
 for n = 1: length(allPics)
     imValues(n).imName = allPics(n).name;
-    rgbImages(:,:,:,n) = imread(allPics(n).name);
+    rgbImages(:,:,:,n) = imread(allPics(n).name)*lum;
 end
 
 %% Process

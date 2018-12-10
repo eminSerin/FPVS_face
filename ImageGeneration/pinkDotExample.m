@@ -1,9 +1,11 @@
-clc;
-clear;
-
-subID = 7; % Write subject ID you want to check his/her images.
+function [] = pinkDotExample(subID)
+%   pinkDotExample simulates possible pink dot location on the image of
+%   given subject. The images of the given subject must be 'images' folder.
+%   
+%
+%   Emin Serin - Berlin School of Mind and Brain
+%
 %% Import files
-
 Imgpath  = [pwd, filesep, 'images', filesep,num2str(subID), filesep];
 allPics = dir([Imgpath, '*jpg']); % all pictures.
 
@@ -55,3 +57,4 @@ catch error
     rethrow(error)
 end
 sca;
+end

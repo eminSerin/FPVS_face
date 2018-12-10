@@ -1,13 +1,41 @@
-%% Description
+function [] = stimulusGen(varargin)
+% stimulusGen generates phase scrambled images using Dakin et. al. (2002)
+% algorithm. Input images are decomposed into power and phase using Fast
+% Fourier Transformation, and phase of the each images are changed with
+% random phase. Power of the images are also changed by averaged magnitude
+% of all images in the images folder. HSV color space is used to mask out
+% background.
+% stimulusGen is designed for the FPVS studies. So it creates images to be
+% presented at different frequencies (4Hz in default).
+%
+% Usage:
+%
+% [] = stimulusGen(). Generates 26 phase scrambled images for 4Hz
+% FPVS and 3000 noise images.
+%
+% [] = stimulusGen({'04','10'},15,1000). Generates 15 images for 4Hz and
+% 10Hz FPVS and 1000 noise images. Frequencies values are has to be string.
+%
+% References:
+%
+% Dakin, S. C., Hess, R. F., Ledgeway, T., & Achtman, R. L.
+% (2002). What causes non-monotonic tuning of fMRI response to noisy
+% images?. Current Biology, 12(14), R476-R477.
+%
+% Ales, J. M., Farzin, F., Rossion, B., & Norcia, A. M. (2012). An objective
+% method for measuring face detection thresholds using the sweep
+% steady-state visual evoked response. Journal of vision, 12(10), 18-18.
+%
+% Author: Emin Serin / Berlin School of Mind and Brain / 2018
+%
+%% Input parameters.
+if length(varargin) > 3
+    % raise an error if more than 3 parameters given.
+    error(['requires at most 3 arguements.',' e.g. stimulusGen({''04'',''10''},13)'])
+end
+optargs = {[4],26,3000}; % default parameters.
+optargs(1:length(varargin)) = varargin; % overwrite parameters if given.
 
-% New version of script for image generation.
-% Pool for noise (around. 3000 noise images).
-% Linear coherence levels with 20 steps.
-% New mask algo based on color thresholding using HSV colors.
-% New better alpha blending algo.
-% Updated on 24.03.2018
-
-function [] = stimulusGen()
 tic % start stopwatch
 expDir = pwd;
 subID = input('participant number: '); % As participant number
@@ -46,7 +74,8 @@ MAG_AVG = mean(ims,3);  % MAG_AVG average magnitude spectrum of all images in th
 
 %%
 imageType = {'s','f'}; % image types.
-freq = {'04','10'};
+freq = optargs{1}; % image presentation frequency used in FPVS.
+
 for i = 1: length(imageType)
     imType = imageType{i};
     disp(['Image: ',imType]);
@@ -88,7 +117,7 @@ for i = 1: length(imageType)
     lenCoh = length(coh_set); % Length of coherence set.
     %% Output directory for processed images
     
-    nTrials = 26; % number of trials for each perspective (26 in default)
+    nImages = optargs{2}; % number of images created from each input images.
     disp([int2str(ntarPics),' images in total.']);
     
     % Create Images
@@ -103,18 +132,15 @@ for i = 1: length(imageType)
         mask = createMask(cHSV);
         n = 1;
         for f = 1: length(freq)
-            cFreq = [freq{f}, '_'];
-            for b = 1:nTrials/2 % for each trials
+            cFreq = freq(f);
+            for b = 1:nImages % for each trials
                 
                 % Shows current trial
                 trialWarning = ['Trial: ', num2str(n)];
                 disp(trialWarning)
                 
-                if n < 10
-                    cOutputpath = [iOutputpath, cImageType,cFreq, 'trial_0', num2str(n), filesep];
-                else
-                    cOutputpath = [iOutputpath, cImageType,cFreq, 'trial_', num2str(n), filesep];
-                end
+                cOutputpath = [iOutputpath, cImageType,[sprintf('%02d',cFreq),'_'],...
+                    ['trial_',sprintf('%02d',n)], filesep];
                 
                 if ~exist(cOutputpath, 'dir')
                     mkdir(cOutputpath);
@@ -122,18 +148,14 @@ for i = 1: length(imageType)
                 
                 %% Creates images with different coherence values for each trial
                 for c = 1: lenCoh
-                    for ifreq = 1 : str2double(freq{f})/2
+                    for ifreq = 1 : cFreq/2
                         current_coh = coh_set(c); % current coherence.
                         nImg = phaseScrambled(cPic,mask,h,w,MAG_AVG,current_coh);
                         
-                        %             Write image into jpg file.
-                        if c < 10
-                            imwrite(nImg,[cOutputpath, cImageType,'0' num2str(c), '_'...
-                                num2str(ifreq),'_', num2str(round(current_coh*100)), '.jpeg'], 'jpeg');
-                        else
-                            imwrite(nImg,[cOutputpath, cImageType, num2str(c), '_'...
-                                ,num2str(ifreq) '_', num2str(round(current_coh*100)), '.jpeg'], 'jpeg');
-                        end
+                        % Write image into jpg file.
+                        imwrite(nImg,[cOutputpath, cImageType,sprintf('%02d',c) '_'...
+                            num2str(ifreq),'_', num2str(round(current_coh*100)), '.jpeg'], 'jpeg');
+                        
                     end
                 end
                 n = n + 1;
@@ -145,7 +167,7 @@ for i = 1: length(imageType)
 end
 % Noise image pool.
 disp('Noise images are being created.')
-for p = 1: 3000
+for p = 1: optargs{3}
     if mod(p,100) == 0
         disp(['Noise: ', int2str(p)]);
     end
@@ -155,12 +177,9 @@ for p = 1: 3000
     RPH_X = angle(fft2(randMatr));
     noise = dakinPhaseSpectrumStaircase(sin(RPH_X),cos(RPH_X),h,w,MAG_AVG);
     noise = imfuse(noise,noise,'blend');
+    
     % Write image into jpg file.
-    if p < 10
-        imwrite(noise,[nOutputpath,'n_','0' num2str(p), '_', '.jpg'],'jpg');
-    else
-        imwrite(noise,[nOutputpath,'n_', num2str(p), '_', '.jpg'],'jpg');
-    end
+    imwrite(noise,[nOutputpath,'n_',sprintf('%02d',p), '_', '.jpg'],'jpg');
     
 end
 

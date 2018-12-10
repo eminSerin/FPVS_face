@@ -1,5 +1,20 @@
 function nImg = phaseScrambled(cPic,mask,h,w,MAG_AVG,current_coh)
-
+%   phaseScrambled generates phase scrambled image of given image. 
+%       
+%   Input:
+%       cPic: current image matrix.
+%       mask: mask generated for given image.
+%       h: Height of the image
+%       w: Widht of the image
+%       MAG_AVG: mean magnitude of the image.
+%       current_coh: Coherence value of the image to be generated.
+%
+%   Output:
+%       nImg: Phase scrambled version of given image. 
+%
+%   Emin Serin - Berlin School of Mind and Brain
+%
+%% Main Script.
 randMatr = rand(h,w); % random matrix
 
 PH_S = angle(fft2(cPic)); % PSD angle of pic. 
