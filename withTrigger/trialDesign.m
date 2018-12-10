@@ -1,5 +1,17 @@
 function [expInfo] = trialDesign(cond,freq)
-% trial design
+%   trialDesign generates a randomized trial structure for SSVEP experiment.
+%   
+%   Input: 
+%       cond: Conditions used in the study.
+%       freq: Frequency which images presented in. 
+%
+%   Output:
+%       expInfo: Structure that consists experimental trial structure
+%           information.
+%   
+%   Emin Serin - Berlin School of Mind and Brain
+%
+%% trial design
 imageType = {'familiar','self'}; % Image types used in the experiment
 perspective = {'left','right','center'};
 
@@ -19,7 +31,7 @@ for n = 1: 3
                 expInfo(count).imType = imageType{i};
                 expInfo(count).perspective = perspective{p};
                 expInfo(count).nim = [];
-                expInfo(count).freq = freq{f};
+                expInfo(count).freq = freq(f);
                 expInfo(count).responseType = [];
                 expInfo(count).response = [];
                 expInfo(count).accuracy = [];
@@ -75,6 +87,7 @@ cIm.ls4 = 1;cIm.lf4 = 1;cIm.rs4=1;cIm.rf4=1;cIm.cs4=1;cIm.cf4=1;
 cIm.ls10 = 14;cIm.lf10 = 14;cIm.rs10=14;cIm.rf10=14;cIm.cs10=14;cIm.cf10=14;
 for n = 1: nTrial
     if expInfo(n).freq == 4
+        % If frequency is 4 Hz. 
         switch expInfo(n).perspective
             case 'left'
                 if strcmpi(expInfo(n).imType,'self')

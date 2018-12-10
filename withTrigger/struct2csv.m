@@ -1,5 +1,16 @@
 function []= struct2csv(struct,specify)
-
+%   struct2csv converts structure into .csv file.
+%   
+%   Input: 
+%       struct: The structure to be converted.
+%       specify: The exact field in a structure to be converted.
+%
+%   Output:
+%       .csv file.
+%   
+%   Emin Serin - Berlin School of Mind and Brain
+%
+%% Main script
 if nargin < 2
     % if no specific structure name, use below.
     specify = 'expInfo';

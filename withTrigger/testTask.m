@@ -1,6 +1,12 @@
     function [expInfo] = testTask(mainwin,expInfo,frame,...
     inputDir,noiseDir,lenNoise,keyList,t,pos,color,Trig)
-
+%   trainTask is a test task in SSVEP experiment. It displays the
+%   stimuli,checks the participant's response and returns the expInfo
+%   structure that consists participant response, accuracy and RT values in
+%   each trial. 
+%
+%   Emin Serin - Berlin School of Mind and Brain
+%
 %% Preload Images
 cTrig = checkTrigger(expInfo,Trig,t);
 DrawFormattedText(mainwin,'+','center','center',color.text);
@@ -27,9 +33,18 @@ for i = 1 : jitITI
 end
 
 % Load face images.
-faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1),...
-    '_' expInfo(t).perspective(1) '_' sprintf('%02d',cInfo.freq) '_',...
-    'trial_' sprintf('%02s',cInfo.nim)] filesep '*.jpeg']);
+if cInfo.freq == 4
+    freqStr = '04';
+else
+    freqStr = num2str(cInfo.freq);
+end
+if str2double(cInfo.nim) >= 10
+    faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1)...
+        '_' expInfo(t).perspective(1) '_' freqStr '_' 'trial_' cInfo.nim] filesep '*jpeg']);
+else
+    faceDir = dir([inputDir expInfo(t).imType filesep [expInfo(t).imType(1)...
+        '_' expInfo(t).perspective(1) '_' freqStr '_' 'trial_' ['0' cInfo.nim]] filesep '*jpeg']);
+end
 
 % Create image presentation sequence.
 % sequence = zeros(1,(length(faceDir)*(frame/cInfo.freq)*2)); % preallocate memory.
@@ -39,6 +54,7 @@ for c = 1 : length(faceDir)
     picText(1) = Screen('MakeTexture', mainwin, imread(faceDir(c).name));
     picText(2) = Screen('MakeTexture', mainwin, imread(noiseDir(randi(lenNoise)).name));
     for h = 1 : 2
+        % Shows image two times per half second. 
         for f = 1 : floor((frame/cInfo.freq)*0.5)
             sequence(fnCount) = picText(h);
             fnCount = fnCount + 1;
@@ -61,6 +77,7 @@ pressed = 0;
 tic;
 SendTrigger(cTrig, Trig.duration);
 if ~strcmpi(expInfo(t).responseType,'pink')
+    % Trial without pink dot.
     for n = 1: length(sequence)
         Screen('DrawTexture',mainwin,sequence(n));
         Screen('Flip',mainwin);
@@ -73,6 +90,7 @@ if ~strcmpi(expInfo(t).responseType,'pink')
         end
     end
 else
+    % Trial with pink dot. 
     pinkDot = rand()*10; % random in 10 sec window.
     dotTime = pinkDot + GetSecs;
     rtStart = dotTime;

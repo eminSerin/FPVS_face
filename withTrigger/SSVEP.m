@@ -1,14 +1,24 @@
+%   Self and familiar face presentation using Fast Periodic Visual
+%   Stimulation paradigm. Presents self and familiar phase scrambled face
+%   images at given frequencies. It consists of 4 blocks (2 implicit, 2
+%   explicit). In the implicit block, pink dot is appeared on the screen
+%   for some time while image presentation is taking placed in 10% of trials.
+%   Participant needs to press RETURN key as soon as he/she sees the pink
+%   dot. 
+%   Participant needs to press LEFT CONTROL key as soon as he/she sees own
+%   face whereas RIGHT ARRROW key for familiar other face. That is reversed
+%   in the second explicit block. 
+%
+%   Emin Serin - Berlin School of Mind and Brain.
+%
 try
+    %% Some parameters.
     clc;
     clear;
     
-    % reset random seed
-    rand('state',sum(100*clock));
-    
-    % Input
     subID = input('Participant number: ','s'); % ask participant id.
     cond = 'l'; % left self > right self.
-    lang = 'eng'; % "eng" or "deu" 
+    lang = 'deu'; % "eng" or "deu"
     freq = [4]; % presentation frequency (4 or 10 or both could be used.)
     freq = sort(freq);
     %% Experimental Parameters
@@ -80,13 +90,16 @@ try
     %% Trial Design
     expInfo = trialDesign(cond,freq);
     
+    % reset random seed
+    rand('state',sum(100*clock));
+    
     %% Screen Parameters
     
     % Get number of screens used, and use the display with the greatest
     % display number. For instance if you use external display with laptop,
     % experiment take place on external display.
     screen = max(Screen('Screens'));
-%     screen = 1;
+    %     screen = 1;
     
     % Skip Sync Test. Decrease timing accuracy. Please Change when you figure
     % out problem!! If you have problem with screen synchronization test please
@@ -115,33 +128,32 @@ try
     frame = Screen('FrameRate',screen);
     
     %% Welcome, Goodbye and Instructions
-    
-    % German 
+    % German
     deu.welcome = ['Willkommen zu unserer Studie! \n Dieses Experiment ',...
-        'besteht aus zwei verschiedenen Aufgaben mit jeweils zwei BlÃ¶cken.' ...
-        '\n DrÃ¼cken Sie nun eine beliebige Taste, um fortzufahren.'];
-    deu.lSelf= ['Bitte drÃ¼cken Sie so schnell wie mÃ¶glich die linke STRG-TASTE, sobald Sie Ihr eigenes ',...
+        'besteht aus zwei verschiedenen Aufgaben mit jeweils zwei Blöcken.' ...
+        '\n Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
+    deu.lSelf= ['Bitte drücken Sie so schnell wie möglich die linke STRG-TASTE, sobald Sie Ihr eigenes ',...
         'Gesicht auf dem Bildschirm sehen, oder die rechte PFEIL-TASTE, sobald Sie das Gesicht ',...
         'Ihrer Freundin/Ihres Frendes sehen.\n',...
-        'DrÃ¼cken Sie nun eine beliebige Taste, um fortzufahren.'];
-    deu.rSelf = ['Bitte drÃ¼cken Sie so schnell wie mÃ¶glich die rechte PFEIL-TASTE, sobald Sie Ihr eigenes ',...
+        'Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
+    deu.rSelf = ['Bitte drücken Sie so schnell wie möglich die rechte PFEIL-TASTE, sobald Sie Ihr eigenes ',...
         'Gesicht auf dem Bildschirm sehen, oder die linke STRG-TASTE, sobald Sie das Gesicht  ',...
         'Ihrer Freundin/Ihres Frendes sehen.\n',...
-        'DrÃ¼cken Sie nun eine beliebige Taste, um fortzufahren.'];
+        'Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
     deu.block2 = ['Die Aufgabe ist dieselbe, wie im vorherigen Block. \n',...
-        'DrÃ¼cken Sie eine beliebige Taste, um zu starten.'];
+        'Drücken Sie eine beliebige Taste, um zu starten.'];
     deu.block = ['Block '];
     deu.keyChange = ['Die jeweiligen Tasten wurden getauscht. \n '];
     deu.task1 = ['Aufgabe 1 \n',...
         'Ihre Aufgabe wird es sein, das Erscheinen eines pinken Punktes auf dem Bildschirm zu erkennen.\n',...
-        'Bitte drÃ¼cken Sie so schnell wie mÃ¶glich mit Ihrer rechten Hand die EINGABETASTE,',...
+        'Bitte drücken Sie so schnell wie möglich mit Ihrer rechten Hand die EINGABETASTE,',...
         'sobald Sie den pinken Punkt auf dem Bildschirm sehen. Es wird jedoch auch Durchgaenge geben,',...
-        'in denen kein Punkt erscheint.\n DrÃ¼cken Sie nun eine beliebige Taste, um fortzufahren.'];
+        'in denen kein Punkt erscheint.\n Drücken Sie nun eine beliebige Taste, um fortzufahren.'];
     deu.task2 = ['Aufgabe 2. \n Dieses Mal sollen Sie auf das Erscheinen ',...
         'Ihres eigenen Gesichts bzw. das Gesicht einer Ihnen bekannten Person reagieren.\n'];
-    deu.training = ['Trainingsphase.\n DrÃ¼cken Sie eine beliebige Taste, um zu starten.'];
-    deu.main = ['Die Trainingsphase ist beendet.\n DrÃ¶cken Sie nun eine beliebige Taste, um die Testung zu starten.'];
-    deu.goodbye = ['Das Experiment ist beendet.\n Vielen Dank fÃ¼r Ihre Teilnahme!\n',...
+    deu.training = ['Trainingsphase.\n Drücken Sie eine beliebige Taste, um zu starten.'];
+    deu.main = ['Die Trainingsphase ist beendet.\n Dröcken Sie nun eine beliebige Taste, um die Testung zu starten.'];
+    deu.goodbye = ['Das Experiment ist beendet.\n Vielen Dank für Ihre Teilnahme!\n',...
         'Bitte wenden Sie sich an die Versuchsleitung.'];
     deu.correct = ['Richtig!'];
     deu.wrong = ['Falsch!'];
@@ -149,22 +161,22 @@ try
     % English
     eng.welcome = ['Welcome to our study! \n This experiment consists of ',...
         'two different tasks with two blocks each. \n',...
-        'Please press any key to procede...'];
+        'Please press any key to continue.'];
     eng.lSelf = ['Please press left CTRL-key as soon as you see your own ',...
         'face on the screen, or press right Arrow-key if you see your',...
-        ' friends face.' '\n Press any key to continue...' ];
+        ' friends face.' '\n Press any key to continue.' ];
     eng.rSelf = ['Please press right Arrow-key as soon as you see your own ',...
         'face on the screen, or press left CTRL-key if you see your ',...
-        'friends face.' '\n Press any key to continue...' ];
+        'friends face.' '\n Press any key to continue.' ];
     eng.block2 = ['The task is the same as in the previous block. \n',...
-        'Please press any key to continue...'];
+        'Please press any key to continue.'];
     eng.block = ['Block '];
     eng.keyChange = ['The corresponding key has changed.'];
     eng.task1 = ['Task 1. \n',...
         'Your task is to detect pink dot on the screen. \n',...
         'Please press ENTER-key with your right hand as soon as you see ',...
         'pink dot on the screen. There will also be trials in which no pink dot ',...
-        'appears. \n Please press any key to continue...'];
+        'appears. \n Please press any key to continue.'];
     eng.task2 = ['Task 2. \n',...
         'This time you need to detect the identity of the face shown on the screen.'];
     eng.training = ['Training phase. \n Please press any key to start.'];
@@ -184,7 +196,7 @@ try
             msg = deu;
     end
     
-    %% Welcome message. 
+    %% Welcome message.
     DrawFormattedText(mainwin,msg.welcome,'center','center', color.text,60,[],[],1.5);
     Screen('Flip',mainwin);
     KbWait;
@@ -249,17 +261,20 @@ try
             KbStrokeWait;
         end
         %% Test Block
-        tnum = 5;
+        tnum = 10;
         cTrial = trial;
         disp('Test...');
-        while (expInfo(cTrial).block == cBlock) && ~(cTrial == 157)
-%         for i = 1:tnum
+        %                 while expInfo(cTrial).block == cBlock
+        for i = 1:tnum
             disp(['Trial: ',int2str(cTrial)]);
             % Task function
             [expInfo] = testTask(mainwin,expInfo,frame,...
                 inputDir,noiseDir,lenNoise,keys.keyList,cTrial,pos,color,Trig);
             cTrial = cTrial + 1; % update current trial number.
             save([outputDir,'Data_',subID,'_',date,'_s1.mat'],'expInfo','trainInfo');
+            if cTrial == 157
+                break;
+            end
         end
     end
     KbQueueStop;
@@ -274,3 +289,4 @@ catch error
     CloseTriggerPort; % Close trigger port.
 end
 sca;
+struct2csv([outputDir,'Data_',subID,'_',date,'_s1.mat']);

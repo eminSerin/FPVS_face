@@ -1,6 +1,12 @@
 function [trainInfo] = trainTask(mainwin,expInfo,frame,cBlock,...
     inputDir,noiseDir,lenNoise,keyList,t,pos,color,msg,trnum,trainInfo,cTrial,freq)
-
+%   trainTask is a training task in SSVEP experiment. It consists 3-trial
+%   short version of each task without generating any trigger. It returns
+%   trainInfo structure that includes participants response in each
+%   training trial. 
+%
+%   Emin Serin - Berlin School of Mind and Brain
+%
 %% Preload Images
 DrawFormattedText(mainwin,'+','center','center',color.text);
 Screen('Flip',mainwin);
@@ -35,9 +41,19 @@ end
 % random Frequency
 randInf.f = freq(randi(length(freq))); % frequency
 if length(freq) > 1
-    randInf.nim = randi(max([expInfo.nim])/2);
+    if randInf.f == 4
+        freqStr = '04';
+        randInf.nim = randi(max([expInfo.nim])/2);
+    else
+        freqStr = num2str(randInf.f);
+        randInf.nim = 13 + randi(max([expInfo.nim])/2);
+    end
+elseif freq == 4
+     freqStr = '04';
+     randInf.nim = randi(max([expInfo.nim])/2);
 else
-    randInf.nim = randi(max([expInfo.nim]));
+    freqStr = num2str(randInf.f);
+    randInf.nim = 13 + randi(max([expInfo.nim])/2);
 end
 
 % Save train info.
@@ -65,8 +81,13 @@ for i = 1 : jitITI
 end
 
 % Load face images.
-faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),...
-    '_' sprintf('%02d',randInf.f) '_' 'trial_' sprintf('%02d',randInf.nim)] filesep '*jpeg']);
+if randInf.nim >= 10
+    faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),... 
+        '_' freqStr '_' 'trial_' int2str(randInf.nim)] filesep '*jpeg']);
+else
+    faceDir = dir([inputDir randInf.im filesep [randInf.im(1) '_' expInfo(t).perspective(1),... 
+        '_' freqStr '_' 'trial_' ['0' int2str(randInf.nim)]] filesep '*jpeg']);
+end
 
 % Create image presentation sequence.
 % sequence = zeros(1,(cnim*(frame/cInfo.freq))); % preallocate memory.
@@ -168,7 +189,7 @@ else
     end
 end
 
-trainInfo(trnum).cMsg = cMsg;
+trainInfo(trnum).cMsg = cMsg; % wrong or correct; 
 
 DrawFormattedText(mainwin,cMsg,'center','center');
 Screen('Flip',mainwin);
