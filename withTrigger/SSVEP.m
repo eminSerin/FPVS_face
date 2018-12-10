@@ -264,8 +264,8 @@ try
         tnum = 10;
         cTrial = trial;
         disp('Test...');
-        %                 while expInfo(cTrial).block == cBlock
-        for i = 1:tnum
+        while expInfo(cTrial).block == cBlock
+%         for i = 1:tnum
             disp(['Trial: ',int2str(cTrial)]);
             % Task function
             [expInfo] = testTask(mainwin,expInfo,frame,...
