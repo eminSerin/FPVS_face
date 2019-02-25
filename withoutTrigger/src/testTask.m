@@ -58,7 +58,6 @@ KbQueueCreate([],keyList);
 KbQueueStart;
 rtStart=GetSecs;
 pressed = 0;
-tic;
 % SendTrigger(cTrig, Trig.duration);
 if ~strcmpi(expInfo(t).responseType,'pink')
     for n = 1: length(sequence)
@@ -99,7 +98,6 @@ else
         end
     end
 end
-toc;
 KbQueueRelease; % Clear keypress queue.
 Screen('Close'); % Close all offscreens.
 
